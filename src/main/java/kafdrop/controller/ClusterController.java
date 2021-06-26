@@ -18,21 +18,35 @@
 
 package kafdrop.controller;
 
-import io.swagger.annotations.*;
-import kafdrop.config.*;
-import kafdrop.model.*;
-import kafdrop.service.*;
-import org.springframework.beans.factory.*;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.info.*;
-import org.springframework.http.*;
-import org.springframework.stereotype.*;
-import org.springframework.ui.*;
-import org.springframework.web.bind.annotation.*;
+import java.util.Collections;
+import java.util.List;
+import java.util.Properties;
+import java.util.stream.Collectors;
 
-import java.time.*;
-import java.util.*;
-import java.util.stream.*;
+import org.springframework.beans.factory.ObjectProvider;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.info.BuildProperties;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.ResponseStatus;
+
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
+import kafdrop.config.KafkaConfiguration;
+import kafdrop.model.BrokerVO;
+import kafdrop.model.ClusterSummaryVO;
+import kafdrop.model.TopicVO;
+import kafdrop.service.BrokerNotFoundException;
+import kafdrop.service.BuildInfo;
+import kafdrop.service.KafkaMonitor;
 
 @Controller
 public final class ClusterController {

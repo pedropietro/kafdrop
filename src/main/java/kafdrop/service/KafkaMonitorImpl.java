@@ -18,27 +18,46 @@
 
 package kafdrop.service;
 
-import kafdrop.model.*;
-import kafdrop.util.*;
-import org.apache.kafka.clients.admin.*;
-import org.apache.kafka.clients.admin.ConfigEntry.*;
-import org.apache.kafka.clients.consumer.*;
-import org.apache.kafka.common.*;
-import org.apache.kafka.common.header.*;
-import org.slf4j.*;
-import org.springframework.stereotype.*;
-
-import java.util.*;
-import java.util.Map.*;
-import java.util.function.*;
-import java.util.stream.*;
-
 import static java.util.function.Predicate.not;
 
-@Service
-public final class KafkaMonitorImpl implements KafkaMonitor {
-  private static final Logger LOG = LoggerFactory.getLogger(KafkaMonitorImpl.class);
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.Optional;
+import java.util.Set;
+import java.util.TreeMap;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
+import org.apache.kafka.clients.admin.ConfigEntry.ConfigSource;
+import org.apache.kafka.clients.admin.NewTopic;
+import org.apache.kafka.clients.consumer.OffsetAndMetadata;
+import org.apache.kafka.common.TopicPartition;
+import org.apache.kafka.common.header.Headers;
+import org.springframework.stereotype.Service;
+
+import kafdrop.model.AclVO;
+import kafdrop.model.BrokerVO;
+import kafdrop.model.ClusterSummaryVO;
+import kafdrop.model.ConsumerPartitionVO;
+import kafdrop.model.ConsumerTopicVO;
+import kafdrop.model.ConsumerVO;
+import kafdrop.model.CreateTopicVO;
+import kafdrop.model.MessageVO;
+import kafdrop.model.TopicPartitionVO;
+import kafdrop.model.TopicVO;
+import kafdrop.util.Deserializers;
+import lombok.extern.slf4j.Slf4j;
+
+@Service
+@Slf4j
+public final class KafkaMonitorImpl implements KafkaMonitor {
+  
   private final KafkaHighLevelConsumer highLevelConsumer;
 
   private final KafkaHighLevelAdminClient highLevelAdminClient;
@@ -132,7 +151,7 @@ public final class KafkaMonitorImpl implements KafkaMonitor {
         }
         topicVo.setConfig(configMap);
       } else {
-        LOG.warn("Missing config for topic {}", topicVo.getName());
+        log.warn("Missing config for topic {}", topicVo.getName());
       }
     }
     return topicInfos;
@@ -199,8 +218,8 @@ public final class KafkaMonitorImpl implements KafkaMonitor {
   public List<ConsumerVO> getConsumers(Collection<TopicVO> topicVos) {
     final var topics = topicVos.stream().map(TopicVO::getName).collect(Collectors.toSet());
     final var consumerGroupOffsets = getConsumerOffsets(topics);
-    LOG.debug("consumerGroupOffsets: {}", consumerGroupOffsets);
-    LOG.debug("topicVos: {}", topicVos);
+    log.debug("consumerGroupOffsets: {}", consumerGroupOffsets);
+    log.debug("topicVos: {}", topicVos);
     return convert(consumerGroupOffsets, topicVos);
   }
 

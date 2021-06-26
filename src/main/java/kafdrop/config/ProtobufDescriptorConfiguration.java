@@ -14,12 +14,15 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.stereotype.Component;
 
+import lombok.extern.slf4j.Slf4j;
+
 @Configuration
+@Slf4j
 public class ProtobufDescriptorConfiguration {
   @Component
   @ConfigurationProperties(prefix = "protobufdesc")
   public static final class ProtobufDescriptorProperties {
-    private static final Logger LOG = LoggerFactory.getLogger(ProtobufDescriptorProperties.class);
+
     // the idea is to let user specifying a directory stored all descriptor file
     // the program will load and .desc file and show as an option on the message
     // detail screen
@@ -36,7 +39,7 @@ public class ProtobufDescriptorConfiguration {
     public List<String> getDescFilesList() {
       // getting file list
       if (directory == null || Files.notExists(Path.of(directory))) {
-        LOG.info("No descriptor folder configured, skip the setting!!");
+    	  log.info("No descriptor folder configured, skip the setting!!");
         return Collections.emptyList();
       }
       String[] pathnames;

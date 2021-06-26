@@ -37,7 +37,7 @@ import java.util.*;
 @Controller
 @RequestMapping("/topic")
 public final class TopicController {
-  private static final Logger LOG = LoggerFactory.getLogger(TopicController.class);
+
   private final KafkaMonitor kafkaMonitor;
   private final boolean topicDeleteEnabled;
   private final boolean topicCreateEnabled;
