@@ -27,7 +27,7 @@ kafdrop.monitor:
   clientId: Kafdrop
 
 kafka:
-  brokerConnect: kafdrop-viamais-checkout-dev.ocp-eqx.dc.nova:9092
+  brokerConnect: localhost:9092
   isSecured: false
   saslMechanism: "PLAIN"
   securityProtocol: "SASL_PLAINTEXT"
